@@ -1,3 +1,4 @@
+const config = require('./config/config');
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -58,8 +59,18 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+app.listen(config.default.appPort, function () {
+    console.log(config.default.appName + ' listening on port ' + config.default.appPort);
 });
 
 module.exports = app;

@@ -14,11 +14,16 @@ else {
 
 console.log('TelegramBot server started...');
 
-bot.onText(/^\/ping (.+)$/, function (msg, match) {
-    const hosts = [match[1]];
+
+bot.onText(/^\/ping((\b.+)+)$/, function (msg, match) {
+    const hostsArray = [];
+    match[1].trim().split(/\s+/).forEach(function (item, i) {
+        hostsArray[i] = item;
+    });
+
     const chatId = msg.chat.id;
 
-    hosts.forEach(function(host){
+    hostsArray.forEach(function(host){
         ping.sys.probe(host, function(isAlive){
             const pingRespond = isAlive ? 'host ' + host + ' is alive' : 'host ' + host + ' is dead';
             bot.sendMessage(chatId, pingRespond);
